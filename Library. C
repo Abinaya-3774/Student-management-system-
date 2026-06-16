@@ -1,0 +1,269 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+class Library
+{
+    int bookId;
+    string title;
+    string author;
+    int status;   //0 available, 1 issued
+
+
+public:
+
+
+void addBook()
+{
+    ofstream file("library.txt", ios::app);
+
+
+    cout<<"Enter Book ID: ";
+    cin>>bookId;
+
+
+    cout<<"Enter Book Title: ";
+    cin>>title;
+
+
+    cout<<"Enter Author Name: ";
+    cin>>author;
+
+
+    status=0;
+
+
+    file<<bookId<<" "<<title<<" "<<author<<" "<<status<<endl;
+
+
+    file.close();
+
+
+    cout<<"Book Added Successfully\n";
+}
+
+
+
+void displayBooks()
+{
+    ifstream file("library.txt");
+
+
+    cout<<"\nID\tTitle\tAuthor\tStatus\n";
+
+
+    while(file>>bookId>>title>>author>>status)
+    {
+
+        cout<<bookId<<"\t"<<title<<"\t"<<author<<"\t";
+
+
+        if(status==0)
+            cout<<"Available\n";
+
+        else
+            cout<<"Issued\n";
+    }
+
+
+    file.close();
+
+}
+
+
+
+void searchBook()
+{
+
+    string t;
+
+    cout<<"Enter Book Title: ";
+    cin>>t;
+
+
+    ifstream file("library.txt");
+
+
+    while(file>>bookId>>title>>author>>status)
+    {
+
+        if(title==t)
+        {
+            cout<<"Book Found\n";
+            cout<<"ID: "<<bookId<<endl;
+            cout<<"Author: "<<author<<endl;
+            return;
+        }
+
+    }
+
+
+    cout<<"Book Not Found\n";
+
+
+    file.close();
+
+}
+
+
+
+
+void issueBook()
+{
+    int id;
+
+    cout<<"Enter Book ID: ";
+    cin>>id;
+
+
+    ifstream file("library.txt");
+    ofstream temp("temp.txt");
+
+
+    while(file>>bookId>>title>>author>>status)
+    {
+
+        if(bookId==id)
+        {
+            status=1;
+        }
+
+
+        temp<<bookId<<" "<<title<<" "<<author<<" "<<status<<endl;
+
+    }
+
+
+    file.close();
+    temp.close();
+
+
+    remove("library.txt");
+    rename("temp.txt","library.txt");
+
+
+    cout<<"Book Issued Successfully\n";
+
+}
+
+
+
+
+void returnBook()
+{
+    int id;
+
+
+    cout<<"Enter Book ID: ";
+    cin>>id;
+
+
+    ifstream file("library.txt");
+    ofstream temp("temp.txt");
+
+
+
+    while(file>>bookId>>title>>author>>status)
+    {
+
+        if(bookId==id)
+        {
+            status=0;
+        }
+
+
+        temp<<bookId<<" "<<title<<" "<<author<<" "<<status<<endl;
+
+    }
+
+
+
+    file.close();
+    temp.close();
+
+
+    remove("library.txt");
+    rename("temp.txt","library.txt");
+
+
+    cout<<"Book Returned Successfully\n";
+
+}
+
+};
+
+
+
+
+
+int main()
+{
+
+Library l;
+
+int choice;
+
+
+do
+{
+
+cout<<"\n1.Add Book";
+cout<<"\n2.Display Books";
+cout<<"\n3.Search Book";
+cout<<"\n4.Issue Book";
+cout<<"\n5.Return Book";
+cout<<"\n6.Exit";
+
+
+cout<<"\nEnter Choice: ";
+cin>>choice;
+
+
+
+switch(choice)
+{
+
+case 1:
+l.addBook();
+break;
+
+
+case 2:
+l.displayBooks();
+break;
+
+
+case 3:
+l.searchBook();
+break;
+
+
+case 4:
+l.issueBook();
+break;
+
+
+case 5:
+l.returnBook();
+break;
+
+
+case 6:
+cout<<"Exit";
+break;
+
+
+default:
+cout<<"Invalid Choice";
+
+}
+
+
+}while(choice!=6);
+
+
+
+return 0;
+
+}
